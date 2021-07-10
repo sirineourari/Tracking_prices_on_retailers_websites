@@ -68,4 +68,4 @@ for cat in categories_res:
 complete_dataframe = pd.DataFrame()
 complete_dataframe = pd.concat(list_dataframes)
 print(complete_dataframe.head())
-complete_dataframe.to_csv("output.csv", index=False)
+complete_dataframe.to_csv("collected_data/mango.csv", index=False)

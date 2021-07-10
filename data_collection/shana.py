@@ -24,7 +24,8 @@ driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
 # dresses,pants,blazers,t-shirts,shoes,accessories
 label = ["dresses", "pants", "blazers",
          "t-shirts", "shoes", "accessories"]
-categories_stradiv = []
+categories_shana = ["https://shanashop.tn/16-robes", "https://shanashop.tn/14-pantalons", "https://shanashop.tn/12-gilets",
+                    "https://shanashop.tn/17-top", "https://shanashop.tn/18-chaussures", "https://shanashop.tn/9-sacs"]
 
 
 def scrape_product_page(url):
@@ -33,8 +34,8 @@ def scrape_product_page(url):
     page_source = driver.page_source
     soup = BeautifulSoup(page_source, 'html.parser')
     d0 = soup.find_all(
-        'div', attrs={'class': 'hide-overflow'})
-    d1 = soup.find_all('span', attrs={'class': 'format-price'})
+        'h3', attrs={'class': 'h3 product-title'})
+    d1 = soup.find_all('span', attrs={'itemprop': 'price'})
     results = {}
 
     results['Product'] = []
@@ -46,7 +47,7 @@ def scrape_product_page(url):
 
 
 categories_res = []
-for url in categories_stradiv:
+for url in categories_shana:
     #res = {}
     # print(url)
     res = scrape_product_page(url)
@@ -64,5 +65,5 @@ for cat in categories_res:
     list_dataframes.append(category_df)
 complete_dataframe = pd.DataFrame()
 complete_dataframe = pd.concat(list_dataframes)
-# print(complete_dataframe.head())
-complete_dataframe.to_csv("output.csv", index=False)
+print(complete_dataframe.head())
+complete_dataframe.to_csv("collected_data/shana.csv", index=False)

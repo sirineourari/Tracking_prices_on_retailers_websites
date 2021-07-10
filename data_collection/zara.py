@@ -21,12 +21,13 @@ options.add_argument('headless')
 options.add_argument('--no-sandbox')
 driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
 
-# dresses,pants,blazers,t-shirts,shoes,accessories
-label = ["dresses", "pants", "blazers",
-         "t-shirts", "shoes", "accessories"]
-categories_zen = ["https://www.zen.com.tn/10-robes", "https://www.zen.com.tn/19-pantalons", "https://www.zen.com.tn/151-gilets",
-                  "https://www.zen.com.tn/13-tops-t-shirts", "https://www.zen.com.tn/196-chaussures", "https://www.zen.com.tn/72-accessoires"]
-# .replace(u'\xa0', u'')
+# dresses,sweatshirts,pants,blazers,t-shirts,shoes,perfumes,accessories
+label = ["dresses", "sweatshirts", "pants", "blazers",
+         "t-shirts", "shoes", "perfumes", "accessories"]
+categories = ["https://www.zara.com/tn/fr/femme-robes-l1066.html", "https://www.zara.com/tn/fr/femme-sweats-l1320.html", "https://www.zara.com/tn/fr/femme-pantalons-l1335.html", "https://www.zara.com/tn/fr/femme-blazers-l1055.html",
+              "https://www.zara.com/tn/fr/femme-t-shirts-l1362.html?v1=1718817", "https://www.zara.com/tn/fr/femme-chaussures-l1251.html", "https://www.zara.com/tn/fr/femme-beaute-parfums-l1415.html", "https://www.zara.com/tn/fr/femme-accessoires-l1003.html"]
+
+start = time.time()
 
 
 def scrape_product_page(url):
@@ -34,8 +35,9 @@ def scrape_product_page(url):
     time.sleep(1.2)
     page_source = driver.page_source
     soup = BeautifulSoup(page_source, 'html.parser')
-    d0 = soup.find_all('h1', attrs={'class': 'h3 product-title'})
-    d1 = soup.find_all('span', attrs={'class': 'price'})
+    d0 = soup.find_all(
+        'a', attrs={'class': 'product-link _item product-grid-product-info__name link'})
+    d1 = soup.find_all('span', attrs={'class': 'price__amount-current'})
     results = {}
 
     results['Product'] = []
@@ -47,7 +49,7 @@ def scrape_product_page(url):
 
 
 categories_res = []
-for url in categories_zen:
+for url in categories:
     #res = {}
     # print(url)
     res = scrape_product_page(url)
@@ -65,5 +67,7 @@ for cat in categories_res:
     list_dataframes.append(category_df)
 complete_dataframe = pd.DataFrame()
 complete_dataframe = pd.concat(list_dataframes)
-print(complete_dataframe.head())
-complete_dataframe.to_csv("output.csv", index=False)
+print(complete_dataframe)
+complete_dataframe.to_csv("collected_data/zara.csv", index=False)
+end = time.time()
+print(f"Runtime of the program is {end - start}")
